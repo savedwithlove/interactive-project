@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل بيانات الفريق</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f4f7f6; }
+        .main-card { border-radius: 20px; border: none; }
+        .header-gradient { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); }
+        .form-control, .form-select { border-radius: 12px; padding: 12px 15px; }
+        .member-row { background: #fff; border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid #edf1f5; }
+        .member-badge { background-color: #f2994a; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 15px; display: inline-block; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4 mb-5">
+        <div class="card shadow-lg main-card">
+            <div class="card-header header-gradient text-white text-center py-4 px-3">
+                <h2 class="fw-bold mb-2">تعديل بيانات الفريق</h2>
+                <a href="/admin" class="btn btn-light btn-sm mt-2 fw-bold rounded-pill px-4 shadow-sm text-dark">
+                    <i class="bi bi-arrow-right me-1"></i> العودة للوحة التحكم
+                </a>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <form method="POST">
+                    <div class="mb-5 bg-white p-4 rounded-4 shadow-sm border" style="border-color:#edf1f5 !important;">
+                        <label class="form-label fw-bold fs-5 text-dark mb-3"><i class="bi bi-book-half me-2 text-warning"></i>الموضوع (الأسبوع):</label>
+                        <select name="topic_id" class="form-select form-select-lg" required>
+                            {% for t in topics %}
+                            <option value="{{ t.id }}" {% if t.id == team.topic_id %}selected{% endif %}>
+                                {{ t.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5 class="fw-bold text-dark m-0"><i class="bi bi-people-fill me-2 text-warning"></i>بيانات أعضاء الفريق (يمكنك التعديل أو الحذف بمسح الخانة)</h5>
+                    </div>
+                    
+                    {% for i in range(5) %}
+                    <div class="member-row shadow-sm">
+                        <div class="member-badge">طالب {{ i+1 }}</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-muted small">الاسم الرباعي</label>
+                                <input type="text" name="name{{ i+1 }}" class="form-control" value="{% if members|length > i %}{{ members[i].name }}{% endif %}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-muted small">الرقم الجامعي / ID</label>
+                                <input type="text" name="id{{ i+1 }}" class="form-control" value="{% if members|length > i %}{{ members[i].student_id }}{% endif %}">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-warning w-100 shadow-sm mt-3 p-3 fs-5 fw-bold text-dark" style="border-radius: 12px;">
+                        <i class="bi bi-save-fill me-2"></i> حفظ التعديلات
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -2,71 +2,72 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- لحل مشكلة الموبايل -->
-    <title>لوحة الإدارة - Interactive Systems</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الدكتورة - تسجيل المشاريع</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; }
-        .navbar { background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%) !important; }
-        .card { border-radius: 15px; border: none; }
-        .card-header { background-color: #fff; border-bottom: 2px solid #f4f7f6; border-radius: 15px 15px 0 0 !important; }
-        .table-hover tbody tr:hover { background-color: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; }
+        .header-bar { background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); color: white; padding: 20px 0; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .team-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e9ecef; }
+        .topic-badge { background-color: #e9ecef; color: #495057; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; margin-bottom: 15px; display: inline-block; }
+        .student-table { margin-bottom: 0; }
+        .student-table th { background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; color: #6c757d; font-weight: 600; }
+        .student-table td { vertical-align: middle; }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark shadow-sm py-3 mb-5">
+    <div class="header-bar">
         <div class="container d-flex justify-content-between align-items-center">
-            <span class="navbar-brand mb-0 h1 fs-4 fw-bold m-0"><i class="bi bi-shield-lock-fill me-2"></i> لوحة الإدارة - Dr. Dinaa</span>
-            <a href="/logout" class="btn btn-danger btn-sm fw-bold rounded-pill shadow-sm px-3 py-2">
-                <i class="bi bi-box-arrow-right me-1"></i> تسجيل الخروج
-            </a>
+            <h3 class="m-0"><i class="bi bi-shield-lock-fill me-2"></i>لوحة تحكم المشاريع (الأدمن)</h3>
+            <a href="/logout" class="btn btn-outline-light btn-sm fw-bold px-4 rounded-pill">تسجيل الخروج</a>
         </div>
-    </nav>
+    </div>
 
     <div class="container mb-5">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
-            <h4 class="fw-bold m-0"><i class="bi bi-grid-fill me-2 text-primary"></i>الفرق المسجلة والمواضيع المحجوزة</h4>
-            <a href="/" class="btn btn-outline-dark rounded-pill px-4 shadow-sm"><i class="bi bi-box-arrow-up-right me-2"></i>زيارة صفحة الطلاب</a>
-        </div>
+        <h4 class="mb-4 fw-bold text-dark">الفرق المسجلة حتى الآن: ({{ teams|length }} فريق)</h4>
         
         {% if teams %}
-            <div class="row g-4">
-            {% for team in teams %}
-                <div class="col-12 col-lg-6">
-                    <div class="card shadow-sm h-100 border-0">
-                        <div class="card-header p-3 d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0 text-primary fw-bold lh-base" style="font-size: 1.05rem;">{{ team.topic_name }}</h6>
-                            <span class="badge bg-secondary rounded-pill ms-2 px-3">{{ team.members|length }} طلاب</span>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0 align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="ps-4 border-0">اسم الطالب</th>
-                                            <th class="border-0">الرقم الجامعي (ID)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for member in team.members %}
-                                        <tr>
-                                            <td class="ps-4 fw-semibold">{{ member.name }}</td>
-                                            <td class="text-muted">{{ member.student_id }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+            {% for t in teams %}
+            <div class="team-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="topic-badge">
+                        <i class="bi bi-journal-bookmark-fill me-1"></i> {{ t.topic_name }}
+                    </div>
+                    <div>
+                        <a href="/admin/edit/{{ t.team_id }}" class="btn btn-warning btn-sm me-2 fw-bold"><i class="bi bi-pencil-square"></i> تعديل</a>
+                        <form action="/admin/delete/{{ t.team_id }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا الفريق بالكامل؟');">
+                            <button type="submit" class="btn btn-danger btn-sm fw-bold"><i class="bi bi-trash-fill"></i> حذف</button>
+                        </form>
                     </div>
                 </div>
-            {% endfor %}
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered student-table mt-2">
+                        <thead>
+                            <tr>
+                                <th width="10%">#</th>
+                                <th width="60%">اسم الطالب</th>
+                                <th width="30%">الرقم الجامعي (ID)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in t.members %}
+                            <tr>
+                                <td class="fw-bold text-muted">{{ loop.index }}</td>
+                                <td class="fw-semibold">{{ m.name }}</td>
+                                <td>{{ m.student_id }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            {% endfor %}
         {% else %}
-            <div class="alert alert-info text-center fs-5 shadow-sm rounded-4 py-5 bg-white border-0">
-                <i class="bi bi-info-circle display-4 text-info d-block mb-3"></i>
-                لا توجد أي فرق مسجلة حتى الآن.
+            <div class="alert alert-info text-center py-5 rounded-4 shadow-sm">
+                <i class="bi bi-info-circle-fill fs-1 d-block mb-3"></i>
+                <h5 class="fw-bold m-0">لم يقم أي فريق بالتسجيل حتى الآن.</h5>
             </div>
         {% endif %}
     </div>
